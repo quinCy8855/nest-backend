@@ -1,0 +1,61 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model mst_users {
+  id          Int      @id @default(autoincrement())
+  user_name    String   @unique
+  password    String
+  email       String   @unique
+  create_dt    DateTime @default(now())
+  update_dt    DateTime @default(now()) @updatedAt
+  role       String   @default("user") 
+  @@index([user_name]) // สร้าง Index สำหรับ userName
+}
+model WorkLog {
+  id              Int      @id @default(autoincrement())
+  businessArea    String   @map("BUSINESS_AREA")
+  startDate       DateTime @map("START_DATE")
+  endDate         DateTime @map("END_DATE")
+  timeSpentPerDay String   @map("TIME_SPENT_PER_DAY")
+  description     String?  @map("DESCRIPTION")
+  createdBy       String   @map("CREATED_BY")
+  createdAt       DateTime @default(now()) @map("CREATED_AT")
+
+  @@map("WORKLOG") // 👈 สำคัญ! เปลี่ยนชื่อตารางให้ตรงกับ DB
+}
+
+model DailyNote {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  tags        String?
+  date        DateTime
+  isToday     Boolean  @map("is_today") @default(false)
+  done        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@map("daily_notes")
+}
+
+model Content {
+  id              Int      @id @default(autoincrement())
+  contentFromUser String
+  createdBy       String
+
+  createdDt       DateTime @default(now())
+  updatedDt       DateTime @updatedAt
+
+  @@map("content")
+}
+
+
+
+
+
